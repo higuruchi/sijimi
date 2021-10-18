@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
 #include "sijimi.h"
 
-int sijimi_execute(char **args)
+int sijimi_execute(ENV *env, char **args)
 {
     int i;
 
@@ -12,14 +15,14 @@ int sijimi_execute(char **args)
 
     for (i = 0; i < sijimi_num_builtins(); i++) {
         if (strcmp(args[0], builtin_str[i]) == 0) {
-            return (*builtin_func[i])(args);
+            return (*builtin_func[i])(env, args);
         }
     }
 
-    return sijimi_launch(args);
+    return sijimi_launch(env, args);
 }
 
-int sijimi_launch(char **args)
+int sijimi_launch(ENV *env, char **args)
 {
     pid_t pid, wpid;
     int status;

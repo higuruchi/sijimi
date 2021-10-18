@@ -18,6 +18,7 @@ builtin_cmd.o: builtin_cmd.c
 
 run:
 	make sijimi
+	make clean
 	./sijimi
 
 clean:

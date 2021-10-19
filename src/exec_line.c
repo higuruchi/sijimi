@@ -45,10 +45,10 @@ int sijimi_launch(ENV *env, line *command_line, int i)
     int status, pp[2] = {};
     char **block_array = block_to_array(&command_line->blk);
 
-    if (i = num_of_block(command_line) - 1) {
-        printf("tok1: %s\n", block_array[0]);
-        printf("tok2: %s\n", block_array[1]);
-        execvp(*block_array, block_array);
+    printf("num of block: %d\n", num_of_block(command_line));
+
+    if (i == num_of_block(command_line) - 1) {
+        execvp(block_array[0], block_array);
         return;
     }
 
@@ -60,7 +60,7 @@ int sijimi_launch(ENV *env, line *command_line, int i)
         dup2(pp[1], 1);
         close(pp[1]);
 
-        sijimi_launch(env, command_line, i+1);
+        sijimi_launch(env, command_line->next_line, i+1);
     }
     if (pid < 0) {
         // fork error
@@ -72,7 +72,7 @@ int sijimi_launch(ENV *env, line *command_line, int i)
         dup2(pp[0], 0);
         close(pp[0]);
         
-        execvp((*block_array)[0], *block_array);
+        execvp(block_array[0], block_array);
     }
     return 1;
 }

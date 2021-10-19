@@ -91,13 +91,14 @@ line *append_block(line *line_header, block block_data)
         return next_line;
     }
 
-    while(line_header->next_line != NULL) {
-        line_header = line_header->next_line;
-    }
+    // while(line_header->next_line != NULL) {
+    //     line_header = line_header->next_line;
+    // }
 
-    line_header->next_line = next_line;
+    // line_header->next_line = next_line;
+    next_line->next_line = line_header;
 
-    return top_line;
+    return next_line;
 }
 
 int num_of_block(line *line)
@@ -112,7 +113,7 @@ int num_of_block(line *line)
         num++;
         line = line->next_line;
     }
-    return num;
+    return num + 1;
 }
 
 char **block_to_array(block *blk)

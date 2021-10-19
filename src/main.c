@@ -16,33 +16,36 @@ int main(int argc, char **argv[])
 
 void sijimi_loop(void)
 {
-    char *line;
-    char **args;
+    char *input_line;
+    line *command_line;
     int status;
     ENV *env = malloc(sizeof(ENV));
 
     initialize_sijimi(env);
 
+    puts("");
+    puts("");
+    puts("hello! this is sijimi");
+
     do {
         printf("%s@%s$ ", env->user, env->cwd);
 
-        line = sijimi_read_line();
-        if (line == NULL) {
-            fprintf(stderr, "sijimi_read_line: return NULL");
+        input_line = sijimi_read_line();
+        if (input_line == NULL) {
+            fprintf(stderr, "sijimi_read_line: return NULL\n");
             break;
         }
 
-        args = sijimi_split_line(line);
-        if (args == NULL) {
-            fprintf(stderr, "sijimi_split_line: return NULL");
+        command_line = sijimi_split_line(input_line);
+        if (command_line == NULL) {
+            fprintf(stderr, "sijimi_split_line: return NULL\n");
             break;
         }
+        status = sijimi_execute(env, command_line);
 
-        status = sijimi_execute(env, args);
-
-        free(line);
-        free(args);
-    } while (status);
+        // free(line);
+        // free(args);
+    } while (1);
 }
 
 ENV *initialize_sijimi(ENV *env)

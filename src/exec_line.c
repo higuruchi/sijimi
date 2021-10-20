@@ -48,6 +48,13 @@ int sijimi_launch(ENV *env, line *command_line, int i)
     printf("num of block: %d\n", num_of_block(command_line));
 
     if (i == num_of_block(command_line) - 1) {
+
+        for (i = 0; i < sijimi_num_builtins(); i++) {
+            if (strcmp(block_array[0], builtin_str[i]) == 0) {
+                return (*builtin_func[i])(env, block_array);
+            }
+        }
+    
         execvp(block_array[0], block_array);
         return;
     }
@@ -71,6 +78,12 @@ int sijimi_launch(ENV *env, line *command_line, int i)
         close(pp[1]);
         dup2(pp[0], 0);
         close(pp[0]);
+
+        for (i = 0; i < sijimi_num_builtins(); i++) {
+            if (strcmp(block_array[0], builtin_str[i]) == 0) {
+                return (*builtin_func[i])(env, block_array);
+            }
+        }
         
         execvp(block_array[0], block_array);
     }

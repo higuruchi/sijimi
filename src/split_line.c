@@ -12,7 +12,7 @@ int num_of_block(line *line);
 void print_block(block *block_header);
 void print_token(token tok);
 
-line *sijimi_split_line(char *input_line)
+line *split_line(char *input_line)
 {
     line  *command_line = NULL;
     block *command_block = NULL;

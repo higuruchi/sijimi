@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-char *sijimi_read_line(void)
+char *read_line(void)
 {
     char *line = NULL;
     ssize_t bufsize = 0;

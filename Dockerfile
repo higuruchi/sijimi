@@ -15,9 +15,9 @@ FROM ubuntu:20.04
 COPY --from=builder /home/sijimi /app/
 COPY --from=builder /home/.sijimirc /app/
 
-WORKDIR /app
-RUN groupadd -g 61000 docker &&\
-    useradd -g 61000 -l -M -s /bin/bash -u 61000 docker
+# WORKDIR /home/docker
+RUN groupadd -g 1000 docker &&\
+    useradd -m -u 1000 -g 1000  -s /app/sijimi docker
 
 USER docker
 

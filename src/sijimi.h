@@ -12,6 +12,7 @@ typedef struct block {
 } block;
 
 typedef struct line {
+    int redirect_flg;
     block blk;
     struct line *next_line;
 } line;
@@ -25,6 +26,7 @@ char *read_line(void);
 line *split_line(char *);
 void print_line(line *);
 int num_of_block(line *);
+int num_of_token(block *blk);
 char **block_to_array(block *);
 
 

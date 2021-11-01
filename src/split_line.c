@@ -4,10 +4,11 @@
 #include "sijimi.h"
 
 #define TOKEN_DELIM " \t\r\n\a"
+#define REDIRECT_ON 1
+#define REDIRECT_OFF 0
 
 block *append_token(block *blk_header, token token_data);
-int num_of_token(block *blk);
-line *append_block(line *line_header, block block_data);
+line *append_block(line *line_header, block block_data, int right_flg);
 int num_of_block(line *line);
 void print_block(block *block_header);
 void print_token(token tok);
@@ -16,26 +17,51 @@ line *split_line(char *input_line)
 {
     line  *command_line = NULL;
     block *command_block = NULL;
-    token command_token;
+    token command_token, command_token_right;
 
     command_token = strtok(input_line, TOKEN_DELIM);
+    command_token_right = strtok(NULL, TOKEN_DELIM);
+
     while (command_token != NULL) {
         if (strcmp(command_token, "|") == 0) {
             if (command_block == NULL) {
                 fprintf(stderr, "syntax error\n");
                 return NULL;
             }
-            command_line = append_block(command_line, *command_block);
+            if (command_token_right == NULL) {
+                fprintf(stderr, "syntax error\n");
+                return NULL;
+            }
+
+            command_line = append_block(command_line, *command_block, REDIRECT_OFF);
             command_block = NULL;
+
+        } else if (strcmp(command_token, ">") == 0) {
+            if (command_block == NULL) {
+                fprintf(stderr, "syntax error\n");
+                return NULL;
+            }
+            if (command_token_right == NULL) {
+                fprintf(stderr, "syntax error\n");
+                return NULL;
+            }
+
+            command_block = append_token(command_block, command_token_right);
+            command_line = append_block(command_line, *command_block, REDIRECT_ON);
+            command_token = command_token_right;
+            command_token_right = strtok(NULL, TOKEN_DELIM);
+            command_block = NULL;
+
         } else {
             command_block = append_token(command_block, command_token);
         }
-        command_token = strtok(NULL, TOKEN_DELIM);
+
+        command_token = command_token_right;
+        command_token_right = strtok(NULL, TOKEN_DELIM);
     }
 
     if (command_block != NULL) {
-        // 以下でセグフォが発生している
-        command_line = append_block(command_line, *command_block);
+        command_line = append_block(command_line, *command_block, REDIRECT_OFF);
     }
 
     return command_line;
@@ -76,7 +102,7 @@ int num_of_token(block *blk)
     return num + 1;
 }
 
-line *append_block(line *line_header, block block_data)
+line *append_block(line *line_header, block block_data,  int redirect_flg)
 {
     line *top_line = line_header;
     line *next_line = malloc(sizeof(line));
@@ -84,6 +110,7 @@ line *append_block(line *line_header, block block_data)
         fprintf(stderr, "malloc: memory allocation error\n");
     }
 
+    next_line->redirect_flg = redirect_flg;
     next_line->blk = block_data;
     next_line->next_line = NULL;
 
@@ -91,11 +118,6 @@ line *append_block(line *line_header, block block_data)
         return next_line;
     }
 
-    // while(line_header->next_line != NULL) {
-    //     line_header = line_header->next_line;
-    // }
-
-    // line_header->next_line = next_line;
     next_line->next_line = line_header;
 
     return next_line;
@@ -116,6 +138,7 @@ int num_of_block(line *line)
     return num + 1;
 }
 
+
 char **block_to_array(block *blk)
 {
     int token_num = num_of_token(blk), i = 0;
@@ -130,6 +153,8 @@ char **block_to_array(block *blk)
     *(blk_array+token_num) = NULL;
     return blk_array;
 }
+
+// --デバック用関数--------------
 
 void print_line(line *line_header)
 {

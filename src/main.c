@@ -3,9 +3,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <pwd.h>
+#include <signal.h>
+#include <sysexits.h>
 #include "sijimi.h"
 
 ENV *initialize_sijimi(ENV *env);
+void abrt_handler(int);
 void sijimi_loop(void);
 
 int main(int argc, char **argv[])
@@ -13,6 +16,7 @@ int main(int argc, char **argv[])
     sijimi_loop();
     return 0;
 }
+
 
 void sijimi_loop(void)
 {
@@ -23,8 +27,6 @@ void sijimi_loop(void)
 
     initialize_sijimi(env);
 
-    puts("");
-    puts("");
     puts("hello! this is sijimi");
     puts("please input command!");
 
@@ -32,6 +34,11 @@ void sijimi_loop(void)
         printf("%s@%s$ ", env->user, env->cwd);
 
         input_line = read_line();
+
+        if (signal(SIGINT, abrt_handler) == SIG_ERR) {
+            exit(1);
+        }
+
         if (input_line == NULL) {
             fprintf(stderr, "read_line: return NULL\n");
             break;
@@ -40,16 +47,22 @@ void sijimi_loop(void)
         command_line = split_line(input_line);
         if (command_line == NULL) {
             fprintf(stderr, "split_line: return NULL\n");
-            break;
+            continue;
         }
+
         status = execute(env, command_line);
         if (status < 0) {
             fprintf(stderr, "execution error\n");
+            free(command_line);
+            free(input_line);
+            continue;
         }
 
         free(command_line);
         free(input_line);
     } while (1);
+
+    return 0;
 }
 
 ENV *initialize_sijimi(ENV *env)
@@ -77,6 +90,12 @@ ENV *initialize_sijimi(ENV *env)
 
     return env;
 }
+
+void abrt_handler(int sig) {
+    puts("Bye");
+    exit(1);
+}
+
 
 // int initialize_env() {
 

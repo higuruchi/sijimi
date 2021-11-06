@@ -43,7 +43,7 @@ int launch(ENV *env, line *command_line, int i)
     int status, pp[2] = {};
     char **block_array = block_to_array(&command_line->blk);
 
-    // リダイレクトを一番お尻にのみ限定
+    // リダイレクト
     if (i == num_of_block(command_line) - 1 && command_line->redirect_flg == 1) {
         // リダイレクトがある場合
         int token_num, fd;

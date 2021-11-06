@@ -11,7 +11,7 @@ ENV *initialize_sijimi(ENV *env);
 void abrt_handler(int);
 void sijimi_loop(void);
 
-int main(int argc, char **argv[])
+int main(int argc, char **argv)
 {
     sijimi_loop();
     return 0;
@@ -61,8 +61,6 @@ void sijimi_loop(void)
         free(command_line);
         free(input_line);
     } while (1);
-
-    return 0;
 }
 
 ENV *initialize_sijimi(ENV *env)

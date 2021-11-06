@@ -1,40 +1,40 @@
 # sijimi
 
-## PURPOSE
+## Purpose
 
-shllがどのように動くのかを知ることを目的として「sijimi」を作成しました。
+I created "sijimi" for the purpose of knowing how shll works.
 
-### 実装した機能
+## Implemented function
 
-- コマンドの実行
+- execute
 
-```
-$ ls
-test.txt
-$ cat test.txt
-hoge
-fuga
-hogefuga
-fugafuga
-hogefuga
-```
+  ```
+  $ ls
+  test.txt
+  $ cat test.txt
+  hoge
+  fuga
+  hogefuga
+  fugafuga
+  hogefuga
+  ```
 
-- パイプ
+- pipe
 
-```
-$ cat test.txt | grep fuga
-fuga
-hogefuga
-fugafuga
-hogefuga
-```
-- リダイレクト
+  ```
+  $ cat test.txt | grep fuga
+  fuga
+  hogefuga
+  fugafuga
+  hogefuga
+  ```
+- redirect
 
-```
-$ echo rararara > test1.txt
-$ cat test1.txt
-rararara
-```
+  ```
+  $ echo rararara > test1.txt
+  $ cat test1.txt
+  rararara
+  ```
 
 ## Requirement
 
